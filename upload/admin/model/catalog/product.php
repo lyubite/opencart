@@ -110,9 +110,15 @@ class ModelCatalogProduct extends Model {
 			}
 		}
 
-		if ($data['keyword']) {
-			$this->db->query("INSERT INTO " . DB_PREFIX . "url_alias SET query = 'product_id=" . (int)$product_id . "', keyword = '" . $this->db->escape($data['keyword']) . "'");
+		$seo_keyword = $data['keyword'];
+		if (!$data['keyword']) {
+			$this->load->library('translit');
+			$lang_id = $this->config->get('config_language_id');
+			$product_name = $data['product_description'][$lang_id]['name'];
+			$seo_keyword = seo_keyword($product_name);
 		}
+		$this->db->query("INSERT INTO " . DB_PREFIX . "url_alias SET query = 'product_id=" . (int)$product_id . "', keyword = '" . $this->db->escape($seo_keyword) . "'");
+
 
 		if (isset($data['product_profiles'])) {
 			foreach ($data['product_profiles'] as $profile) {
@@ -261,9 +267,14 @@ class ModelCatalogProduct extends Model {
 
 		$this->db->query("DELETE FROM " . DB_PREFIX . "url_alias WHERE query = 'product_id=" . (int)$product_id. "'");
 
-		if ($data['keyword']) {
-			$this->db->query("INSERT INTO " . DB_PREFIX . "url_alias SET query = 'product_id=" . (int)$product_id . "', keyword = '" . $this->db->escape($data['keyword']) . "'");
+		$seo_keyword = $data['keyword'];
+		if (!$data['keyword']) {
+			$this->load->library('translit');
+			$lang_id = $this->config->get('config_language_id');
+			$product_name = $data['product_description'][$lang_id]['name'];
+			$seo_keyword = seo_keyword($product_name);
 		}
+		$this->db->query("INSERT INTO " . DB_PREFIX . "url_alias SET query = 'product_id=" . (int)$product_id . "', keyword = '" . $this->db->escape($seo_keyword) . "'");
 
 		$this->db->query("DELETE FROM `" . DB_PREFIX . "product_profile` WHERE product_id = " . (int)$product_id);		if (isset($data['product_profiles'])) {			foreach ($data['product_profiles'] as $profile) {				$this->db->query("INSERT INTO `" . DB_PREFIX . "product_profile` SET `product_id` = " . (int)$product_id . ", customer_group_id = " . (int)$profile['customer_group_id'] . ", `profile_id` = " . (int)$profile['profile_id']);			}		}		$this->cache->delete('product');
 	}
