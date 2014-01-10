@@ -47,9 +47,14 @@ class ModelCatalogCategory extends Model {
 			}
 		}
 
-		if ($data['keyword']) {
-			$this->db->query("INSERT INTO " . DB_PREFIX . "url_alias SET query = 'category_id=" . (int)$category_id . "', keyword = '" . $this->db->escape($data['keyword']) . "'");
+		$seo_keyword = $data['keyword'];
+		if (!$data['keyword']) {
+			$this->load->library('translit');
+			$lang_id = $this->config->get('config_language_id');
+			$category_name = $data['category_description'][$lang_id]['name'];
+			$seo_keyword = seo_keyword($category_name);
 		}
+		$this->db->query("INSERT INTO " . DB_PREFIX . "url_alias SET query = 'category_id=" . (int)$category_id . "', keyword = '" . $this->db->escape($seo_keyword) . "'");
 
 		$this->cache->delete('category');
 	}
@@ -146,9 +151,14 @@ class ModelCatalogCategory extends Model {
 
 		$this->db->query("DELETE FROM " . DB_PREFIX . "url_alias WHERE query = 'category_id=" . (int)$category_id. "'");
 
-		if ($data['keyword']) {
-			$this->db->query("INSERT INTO " . DB_PREFIX . "url_alias SET query = 'category_id=" . (int)$category_id . "', keyword = '" . $this->db->escape($data['keyword']) . "'");
+		$seo_keyword = $data['keyword'];
+		if (!$data['keyword']) {
+			$this->load->library('translit');
+			$lang_id = $this->config->get('config_language_id');
+			$category_name = $data['category_description'][$lang_id]['name'];
+			$seo_keyword = seo_keyword($category_name);
 		}
+		$this->db->query("INSERT INTO " . DB_PREFIX . "url_alias SET query = 'category_id=" . (int)$category_id . "', keyword = '" . $this->db->escape($seo_keyword) . "'");
 
 		$this->cache->delete('category');
 	}
