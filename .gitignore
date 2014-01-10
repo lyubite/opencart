@@ -36,3 +36,5 @@
 # /upload/backup.install/*
 # /upload/install/*
 
+/upload/admin/language/russian/*
+/upload/catalog/language/russian/*
