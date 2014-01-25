@@ -17,7 +17,7 @@ class ControllerCommonMaintenance extends Controller {
 
 			$this->user = new User($this->registry);
 
-			if (($route != 'payment') && !$this->user->isLogged()) {
+			if (($route != 'checkout') && !$this->user->isLogged()) {
 				return $this->forward('common/maintenance/info');
 			}						
 		}
